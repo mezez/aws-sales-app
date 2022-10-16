@@ -54,7 +54,7 @@ public class Client {
 					
 					try {
 						SnsClient snsClient = SnsClient.builder().region(ShopConstants.region).build();
-						PublishRequest request = PublishRequest.builder().message(ShopConstants.bucket_name + ";" + fileName).topicArn(ShopConstants.topicARN).build();
+						PublishRequest request = PublishRequest.builder().message(storeName+";"+ShopConstants.bucket_name + ";" + fileName).topicArn(ShopConstants.topicARN).build();
 						
 						PublishResponse snsResponse = snsClient.publish(request);
 						System.out.println(snsResponse.messageId() + " Notification sent to worker. Status is " + snsResponse.sdkHttpResponse().statusCode());
