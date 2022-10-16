@@ -10,7 +10,10 @@ public class ShopConstants {
 	//S3
 	public static String bucket_name = "";
 	
-	public static String sales_files_folder_path = "C:/Users/admin/Downloads/sales-data/";
+	//SQS
+	public static String topicARN = "";
+	
+	public static String sales_files_folder = "C:\\Users\\admin\\Downloads\\sales-data\\";
 	
 	public static String STORE_1 = "store1";
 	public static String STORE_2 = "store2";
