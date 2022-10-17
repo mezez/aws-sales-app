@@ -2,6 +2,7 @@ package shop.lambda;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,31 +47,46 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 
 			String storeName = messageContent[0];
 			String bucketName = messageContent[1];
-			String fileKey = messageContent[2].trim(); // THROWS FILE NOT FOUND EXCEPTION IN AWS. WHYYYYY. FILE EXISTS
-														// SO WHYYY
+			String fileKey = messageContent[2].trim(); 
 
 			AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
-			try (final S3Object s3Object = s3Client.getObject(bucketName, fileKey);
-					final InputStreamReader streamReader = new InputStreamReader(s3Object.getObjectContent(),
+			
+			double totalProfit = 0.0;
+			int count = 0;
+			String line = "";
+			
+			try (S3Object s3Object = s3Client.getObject(bucketName, fileKey);
+					InputStreamReader streamReader = new InputStreamReader(s3Object.getObjectContent(),
 							StandardCharsets.UTF_8);
-					final BufferedReader reader = new BufferedReader(streamReader)) {
+					BufferedReader reader = new BufferedReader(streamReader)) {
 
-				// TODO UPDATE FILE PROCESSING
+				// FILE PROCESSING
+				
 				// by store
-				double totalProfit = 0.0;
-				int count = 0;
-
-				String line = "";
+				
 				while ((line = reader.readLine()) != null) {
 					// skip header line
 					if (count > 0) {
 						// use semicolon as separator
 						String[] cols = line.split(";");
-						totalProfit += Integer.parseInt(cols[6]);
+						totalProfit += Double.parseDouble(cols[6]);
 					}
 					count++;
 
 				}
+				
+			} catch (final IOException e) {
+				System.out.println("IOException: " + e.getMessage());
+			}
+			
+			try (S3Object s3Object = s3Client.getObject(bucketName, fileKey);
+					InputStreamReader streamReader = new InputStreamReader(s3Object.getObjectContent(),
+							StandardCharsets.UTF_8);
+					BufferedReader reader = new BufferedReader(streamReader)) {
+
+				// by product
+				count = 0;
+				line = "";
 
 				// by product
 				count = 0;
@@ -84,12 +100,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 
 						// create new product if it does not already exist in array
 						String nameToMatch = cols[2];
-//					    Optional<String> productExistsBasedOnProp = products.stream().map(Product::getName).findFirst();
-
-//					    Optional<Object> existingProduct = Optional.of(products.stream()
-//					    	    .filter(product -> product.getName().equals(nameToMatch)) // Returns a stream consisting of the elements of this stream that match the given predicate.
-//					    	    .findFirst().get()) ;// Returns an Optional describing the first element of this stream, or an empty Optional if the stream is empty. If the stream has no encounter order, then any element may be returned.
-//					    	    .map(product -> product.incrementAll(product)); // If a value is present, apply the provided mapping function to it, and if the result is non-null, return an Optional describing the result. Otherwise return an empty Optional.
+						
 						try {
 							int index = IntStream.range(0, products.size())
 									.filter(i -> nameToMatch.equals(products.get(i).getName())).findFirst().getAsInt();
@@ -117,7 +128,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 				}
 
 				// write to new file
-				this.writeToCSV(totalProfit, products, fileKey+"-summary.csv", s3);
+				WorkerLambda.writeToCSV(totalProfit, products, fileKey+"-summary.csv", s3);
 				
 			} catch (final IOException e) {
 				System.out.println("IOException: " + e.getMessage());
@@ -147,14 +158,14 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 		return null;
 	}
 
-	public boolean writeToCSV(double totalProfit, ArrayList<Product> products, String fileName, S3Client s3) {
+	public static boolean writeToCSV(double totalProfit, ArrayList<Product> products, String fileName, S3Client s3) {
 
 
 		FileWriter csvWriter;
 		try {
 			csvWriter = new FileWriter(fileName);
 
-			csvWriter.append("Total Profit:");
+			csvWriter.append("Total Profit");
 			csvWriter.append(";");
 			csvWriter.append(Double.toString(totalProfit));
 			csvWriter.append("\n");
@@ -171,6 +182,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 
 			for (Product product : products) {
 				csvWriter.append(product.getName());
+				csvWriter.append(";");
 				csvWriter.append(Double.toString(product.getQuantity()));
 				csvWriter.append(";");
 				csvWriter.append(Double.toString(product.getPrice()));
