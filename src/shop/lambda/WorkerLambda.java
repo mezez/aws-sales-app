@@ -175,11 +175,11 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 
 			csvWriter.append("Product");
 			csvWriter.append(";");
-			csvWriter.append("Quantity");
+			csvWriter.append("TotalQuantity");
 			csvWriter.append(";");
-			csvWriter.append("Total Price");
+			csvWriter.append("TotalPrice");
 			csvWriter.append(";");
-			csvWriter.append("Total Profit");
+			csvWriter.append("TotalProfit");
 			csvWriter.append("\n");
 
 			for (Product product : products) {
