@@ -161,7 +161,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 	public static boolean writeToCSV(double totalProfit, ArrayList<Product> products, String fileName, S3Client s3, Context context) {
 		
 		String initialFileName = fileName;
-		fileName = "tmp/"+fileName;
+		fileName = "/tmp/"+fileName;
 
 		FileWriter csvWriter;
 		try {
