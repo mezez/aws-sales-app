@@ -1,10 +1,14 @@
 package shop.lambda;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
@@ -19,10 +23,12 @@ import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
+import com.csvreader.CsvWriter;
 
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import shop.Product;
 import shop.ShopConstants;
 import shop.s3ops.BucketOperations;
@@ -159,12 +165,12 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 		return null;
 	}
 
-	public static boolean writeToCSV(double totalProfit, ArrayList<Product> products, String fileName, S3Client s3, Context context) {
+	public static boolean writeToCSV(double totalProfit, ArrayList<Product> products, String fileKey, S3Client s3, Context context) {
 
 
 		FileWriter csvWriter;
 		try {
-			csvWriter = new FileWriter(fileName);
+			csvWriter = new FileWriter(fileKey);
 
 			csvWriter.append("Total Profit");
 			csvWriter.append(";");
@@ -196,18 +202,69 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 			csvWriter.close();
 			
 			//update to s3 bucket
-			File file = new File(fileName);
-			context.getLogger().log("Writing done for summary file:" + fileName );
+			File file = new File(fileKey);
+			context.getLogger().log("Writing done for summary file:" + fileKey );
 			Path filePath = file.toPath();
 			context.getLogger().log("Path:" + filePath );
 			
 			//upload file to bucket
-			boolean bucketUploaded = BucketOperations.uploadFileToBucket(s3, ShopConstants.bucket_name, fileName, filePath);
+			boolean bucketUploaded = BucketOperations.uploadFileToBucket(s3, ShopConstants.bucket_name, fileKey, filePath);
 			
 			if(bucketUploaded) {
 				System.out.println("file uploaded");
 				context.getLogger().log("Summary file uploaded to :" + ShopConstants.bucket_name );
 			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	public static boolean writeToCSVSec(double totalProfit, ArrayList<Product> products, String fileName, S3Client s3, Context context) {
+
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+	    CsvWriter csvWriter = new CsvWriter(stream, ',', Charset
+	            .forName("ISO-8859-1"));
+
+		try {
+			csvWriter.setRecordDelimiter(';');
+			csvWriter.write("Total Profit;"+Double.toString(totalProfit));
+			csvWriter.write("");
+			csvWriter.write("");
+
+
+			csvWriter.write("Product;TotalQuantity;TotalPrice;TotalProfit");
+
+
+			for (Product product : products) {
+				csvWriter.write(product.getName()+";"+Double.toString(product.getQuantity()) +";"+Double.toString(product.getPrice())+";"+Double.toString(product.getProfit()));
+			}
+
+			csvWriter.flush();
+			csvWriter.close();
+			
+			//update to s3 bucket
+			InputStream inputStream = new ByteArrayInputStream(stream.toByteArray());
+			context.getLogger().log("Writing done for summary file:" + fileName );
+			
+			
+			
+			//upload file to bucket
+//			boolean bucketUploaded = BucketOperations.uploadFileToBucket(s3, ShopConstants.bucket_name, fileName, filePath);
+			
+			try{
+				s3.putObject(PutObjectRequest.builder().bucket(ShopConstants.bucket_name).key(fileName)
+			        .build(), RequestBody.fromInputStream(inputStream, 0));
+				
+				System.out.println("file uploaded");
+				context.getLogger().log("Summary file uploaded to :" + ShopConstants.bucket_name );
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+
 
 		} catch (IOException e) {
 			e.printStackTrace();
