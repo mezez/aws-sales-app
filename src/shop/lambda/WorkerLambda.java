@@ -2,7 +2,6 @@ package shop.lambda;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,8 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -129,7 +126,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 				}
 
 				// write to new file
-				WorkerLambda.writeToCSV(totalProfit, products, fileKey+"-summary.csv", s3, context);
+				WorkerLambda.writeToCSV(totalProfit, products, "summary-"+fileKey, s3, context);
 				
 			} catch (final IOException e) {
 				System.out.println("IOException: " + e.getMessage());
