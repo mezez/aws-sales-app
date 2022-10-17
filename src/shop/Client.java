@@ -17,7 +17,7 @@ public class Client {
 		//get store name and filename from run args
 		String storeName = args[0];
 		String date = args[1];
-		String fileName = date+storeName+".csv";
+		String fileName = date+"-"+storeName+".csv";
 		
 		//use store name and filename to load file to upload
 		File file = new File(ShopConstants.sales_files_folder+fileName); //file to upload

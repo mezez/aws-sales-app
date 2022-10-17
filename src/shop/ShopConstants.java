@@ -4,14 +4,16 @@ import software.amazon.awssdk.regions.Region;
 
 public class ShopConstants {
 	
+	//EC2
 	public static Region region = Region.US_EAST_1;
 	public static String amiId = "ami-05fa00d4c63e32376";
 	
 	//S3
-	public static String bucket_name = "";
+	public static String bucket_name = "mezbucket2";
 	
 	//SQS
-	public static String topicARN = "";
+//	public static String topicARN = "arn:aws:sns:us-east-1:996997097668:MyFirstTopic";
+	public static String topicARN ="arn:aws:sns:us-east-1:996997097668:SalesAppTopic";
 	
 	public static String sales_files_folder = "C:\\Users\\admin\\Downloads\\sales-data\\";
 	
