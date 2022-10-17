@@ -77,6 +77,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 				
 			} catch (final IOException e) {
 				System.out.println("IOException: " + e.getMessage());
+				context.getLogger().log("IOException: " + e.getMessage());
 			}
 			
 			try (S3Object s3Object = s3Client.getObject(bucketName, fileKey);
@@ -128,13 +129,15 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 				}
 
 				// write to new file
-				WorkerLambda.writeToCSV(totalProfit, products, fileKey+"-summary.csv", s3);
+				WorkerLambda.writeToCSV(totalProfit, products, fileKey+"-summary.csv", s3, context);
 				
 			} catch (final IOException e) {
 				System.out.println("IOException: " + e.getMessage());
+				context.getLogger().log("IOException: " + e.getMessage());
 			}
 
 			System.out.println("Finished... processing file");
+			context.getLogger().log("Finished... processing file");
 
 
 			//delete from s3 after processing
@@ -146,6 +149,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
  
 			s3.deleteObject(deleteRequest);
 			System.out.println(fileKey +" deleted from bucket:" + bucketName );
+			context.getLogger().log(fileKey +" deleted from bucket:" + bucketName );
 
 		} else {
 			System.out.println("No message found in the latest request");
@@ -158,7 +162,7 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 		return null;
 	}
 
-	public static boolean writeToCSV(double totalProfit, ArrayList<Product> products, String fileName, S3Client s3) {
+	public static boolean writeToCSV(double totalProfit, ArrayList<Product> products, String fileName, S3Client s3, Context context) {
 
 
 		FileWriter csvWriter;
@@ -196,13 +200,16 @@ public class WorkerLambda implements RequestHandler<SNSEvent, Object> {
 			
 			//update to s3 bucket
 			File file = new File(fileName);
+			context.getLogger().log("Writing done for summary file:" + fileName );
 			Path filePath = file.toPath();
+			context.getLogger().log("Path:" + filePath );
 			
 			//upload file to bucket
 			boolean bucketUploaded = BucketOperations.uploadFileToBucket(s3, ShopConstants.bucket_name, fileName, filePath);
 			
 			if(bucketUploaded) {
 				System.out.println("file uploaded");
+				context.getLogger().log("Summary file uploaded to :" + ShopConstants.bucket_name );
 			}
 
 		} catch (IOException e) {

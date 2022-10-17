@@ -44,9 +44,9 @@ public class Client {
 				Path filePath = file.toPath();
 				
 				//upload file to bucket
-				boolean bucketUploaded = BucketOperations.uploadFileToBucket(s3, ShopConstants.bucket_name, fileName, filePath);
+				boolean fileUploaded = BucketOperations.uploadFileToBucket(s3, ShopConstants.bucket_name, fileName, filePath);
 				
-				if(bucketUploaded) {
+				if(fileUploaded) {
 					System.out.println("file uploaded");
 					
 					//send notification to worker application (Lambda or VM application)
