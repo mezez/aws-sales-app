@@ -127,7 +127,7 @@ public class Consolidator {
 	public static void writeToCSV(S3Client s3, Double[] Profit, String[] Store, ArrayList<Product> products,
 			String date) {
 		FileWriter csvWriter;
-		String fileName = "Consolidated-" + date + ".csv";
+		String fileName = "Consolidated-" + date.replace("-", ".") + ".csv";
 		try {
 			csvWriter = new FileWriter(fileName);
 
