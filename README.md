@@ -9,6 +9,8 @@ Here we have implemented a system divided into four parts
 
 ## How to Run (For processing via lambda worker)
 
+- Login to AWS, and update the config credentials for AWS CLI in your .aws/credentials file
+
 S3 and SNS [Local Application Directory: aws-sales-app]:
 - Create an S3 bucket on AWS following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/01-aws-ec2-s3.html, then set the bucket_name variable in the shops.ShopConstants.java file found in the shop package
 - Create an SNS topic on AWS following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/04-aws-sqs-sns.html, replace the topicARN variable in the shops.ShopConstants.java file with your topic topicARN of the aws-sales-app directory
