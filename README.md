@@ -12,7 +12,7 @@ Here we have implemented a system divided into four parts
 S3, SNS and SQS [Local Application Directory: aws-sales-app]:
 - Create an S3 bucket on AWS following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/01-aws-ec2-s3.html, then set the bucket_name variable in the shops.ShopConstants.java file found in the shop package
 - Create an SNS topic on AWS following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/04-aws-sqs-sns.html, replace the topicARN variable in the shops.ShopConstants.java file with your topic topicARN of the aws-sales-app directory
-- Create an SQS queue on AWS following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/04-aws-sqs-sns.html, then replace the queueURL variable in the shops.ShopConstants.java file with your queueURL 
+- (For EC2 worker) Create an SQS queue on AWS following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/04-aws-sqs-sns.html, then replace the queueURL variable in the shops.ShopConstants.java file with your queueURL 
 Lambda:
 - Create a lambda function following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/03-aws-lambda.html. It should subscribe to the SNS topic above as its trigger
 - For the lambda function code, package the aws-sales-app by running the [ mvn package ] console command in the root folder of the project
@@ -21,7 +21,7 @@ Lambda:
 
 Client
 - Update you Region in the shop.ShopConstants.java file if applicable
-- Update the full path to your sales folder containing the sales files to be analysed
+- Update the sales_files_folder variable to the  full path to your sales folder containing the sales files to be analysed
 - Preferably, open code in an IDE
 - Load maven packages in pom.xml File
 - From an IDE, e.g. Eclipse, right click on the Client.java. Navigate to Run As -> Run Configurations or the equivalent in your choses IDE. The goal here is to pass runtime arguments
