@@ -16,7 +16,9 @@ S3, SNS and SQS [Local Application Directory: aws-sales-app]:
 Lambda:
 - Create a lambda function following the steps at https://ci.mines-stetienne.fr/cps2/course/cloud/lab/03-aws-lambda.html. It should subscribe to the SNS topic above as its trigger
 - For the lambda function code, package the aws-sales-app by running the [ mvn package ] console command in the root folder of the project
-- Upload the aws-sales-app-0.0.1-SNAPSHOT.jar file in the target folder as the code for the lamda. Prefarably via an s3 bucket if the size is large as recommended by AWS.
+- Upload the aws-sales-app-0.0.1-SNAPSHOT.jar file in the target folder as the code for the lamda. Preferably via an s3 bucket if the size is large as recommended by AWS.
+- In the runtime settings, set the handler to "shop.lambda.WorkerLambda::handleRequest"
+
 EC2 [Local Application Directory: ec2-sales-app]:
 - Create EC2 by following steps in this URL: https://ci.mines-stetienne.fr/cps2/course/cloud/lab/01-aws-ec2-s3.html
 - Connect to EC2 and install java using this command "sudo amazon-linux-extras install java-openjdk11"
