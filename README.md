@@ -24,7 +24,7 @@ Client [Local Application Directory: aws-sales-app]:
 - Update the sales_files_folder variable to the  full path to your sales folder containing the sales files to be analysed
 - Preferably, open code in an IDE
 - Load maven packages in pom.xml File
-- From an IDE, e.g. Eclipse, right click on the Client.java. Navigate to Run As -> Run Configurations or the equivalent in your choses IDE. The goal here is to pass runtime arguments
+- From an IDE, e.g. Eclipse, right click on the Client.java. Navigate to Run As -> Run Configurations or the equivalent in your preferred IDE. The goal here is to pass runtime arguments
 - In the Main tab, select shop.Client class. Next, in the Arguments tab, add [storename] [date] [workertype]
 - For example, if you want to execute the '01-10-2022-store1.csv file using the lambda worker, the arguments will be store1 01-10-2022 lambda. Replace lambda with ec2 if you are running with EC2 worker (see ec2-sales-app folder readme for running with ec2 worker)
 - The file will now be read and uploaded to the s3 bucket you have configured in the ShopConstants.java file
