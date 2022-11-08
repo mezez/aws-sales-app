@@ -20,6 +20,7 @@ Lambda [Local Application Directory: aws-sales-app]::
 - For the lambda function code, package the aws-sales-app by running the [ mvn package ] console command in the root folder of the project
 - Upload the aws-sales-app-0.0.1-SNAPSHOT.jar file in the target folder as the code for the lamda. Preferably via an s3 bucket if the size is large as recommended by AWS.
 - In the runtime settings, set the handler to "shop.lambda.WorkerLambda::handleRequest"
+- In the configurations tab, under General configuration, click edit and update the timeout to at least 2 minutes to provision enough time for file processing to complete
 
 Client [Local Application Directory: aws-sales-app]:
 - Update you Region in the shop.ShopConstants.java file if applicable
