@@ -29,7 +29,7 @@ EC2 [Local Application Directory: ec2-sales-app]:
 Client
 - Update you Region in the shop.ShopConstants.java file if applicable
 - Update the full path to your sales folder containing the sales files to be analysed
-- Prefarably, open code in an IDE
+- Preferably, open code in an IDE
 - Load maven packages in pom.xml File
 - From an IDE, e.g. Eclipse, right click on the Client.java. Navigate to Run As -> Run Configurations or the equivalent in your choses IDE. The goal here is to pass runtime arguments
 - In the Main tab, select shop.Client class. Next, in the Arguments tab, add [storename] [date] [workertype]
